@@ -15,7 +15,7 @@ urlpatterns = [
     path('change_status/<int:case_id>/', views.change_case_status, name='change_case_status'),
     path('staff/dashboard/', views.staff_dashboard_view, name='staff_dashboard'),
     path('dashboard/', views.public_dashboard_view, name='public_dashboard'),
-    path('delete/<int:case_id>/', CaseDeleteView.as_view(), name='case_delete'),
+    path('delete/<int:pk>/', CaseDeleteView.as_view(), name='case_delete'),
 
 
 
