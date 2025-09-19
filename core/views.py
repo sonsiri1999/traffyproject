@@ -7,7 +7,8 @@ from .models import Case, Follow, Comment ,Image
 from django.contrib import messages
 from django.db.models import Count
 from .forms import CaseForm, CommentForm
-
+from django.views import generic
+from django.urls import reverse_lazy
 def home_view(request):
     # ดึงข้อมูลเคสทั้งหมดจากฐานข้อมูล เรียงจากล่าสุดไปเก่าสุด
     all_cases = Case.objects.all().order_by('-created_at')
@@ -225,3 +226,8 @@ def public_dashboard_view(request):
         'category_counts': category_counts, # เพิ่มข้อมูลหมวดหมู่
     }
     return render(request, 'core/public_dashboard.html', context)
+
+class SignUpView(generic.CreateView):
+    form_class = UserCreationForm  # ใช้ UserCreationForm มาตรฐานของ Django
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'

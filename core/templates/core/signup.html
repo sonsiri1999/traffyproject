@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+<!-- {% extends 'core/base.html' %}
 
 {% block title %}สมัครสมาชิก{% endblock %}
 
@@ -45,4 +45,31 @@
             มีบัญชีอยู่แล้ว? <a href="{% url 'login' %}">เข้าสู่ระบบ</a>
         </p>
     </div>
+{% endblock %} -->
+{% extends 'core/base.html' %}
+
+{% block title %}สมัครสมาชิก{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">สมัครสมาชิก</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary mt-3">สมัครสมาชิก</button>
+                        </div>
+                    </form>
+                    <div class="mt-3 text-center">
+                        มีบัญชีอยู่แล้ว? <a href="{% url 'login' %}">เข้าสู่ระบบ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
