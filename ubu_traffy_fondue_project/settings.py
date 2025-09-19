@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-pf$zhp(98etw01#%of3x*(fv)sncp!7z^w5n39bk^5y2ift1o4
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-LOGIN_URL = 'login/'
+# LOGIN_URL = 'login/'
 ALLOWED_HOSTS = ['*']
 
 MEDIA_URL = '/media/'
