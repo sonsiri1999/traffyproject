@@ -3,10 +3,12 @@
 {% block title %}โปรไฟล์ผู้ใช้{% endblock %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary">สวัสดี, {{ request.user.username }}</h1>
-        <a href="{% url 'logout' %}" class="btn btn-danger">ออกจากระบบ</a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-primary">สวัสดี, {{ request.user.username }}</h1>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+    </form>
+</div>
     
     <div class="card mb-4">
         <div class="card-header">
