@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block title %}แดชบอร์ดเจ้าหน้าที่{% endblock %}
+
+{% block content %}
+    <h1 class="text-primary mb-4">แดชบอร์ดเจ้าหน้าที่</h1>
+
+    <div class="mb-3 d-flex flex-wrap gap-2">
+        {% for status_value, status_label in status_choices %}
+            <a href="{% url 'staff_dashboard' %}?status={{ status_value }}" class="badge rounded-pill bg-info text-dark">
+                {{ status_label }} ({{ status_counts|get_item:status_value|default:0 }})
+            </a>
+        {% endfor %}
+        <a href="{% url 'staff_dashboard' %}" class="badge rounded-pill bg-secondary">ทั้งหมด</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>รายการเรื่องร้องเรียน {% if selected_status %}(สถานะ: {{ selected_status }}){% endif %}</h2>
+    
+    <div class="list-group mt-3">
+        {% if all_cases %}
+            {% for case in all_cases %}
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <a href="{% url 'case_detail' case.id %}" class="text-decoration-none text-dark fw-bold">{{ case.title }}</a>
+                    <div>
+                        <span class="badge bg-secondary me-2">{{ case.get_status_display }}</span>
+                        <a href="{% url 'change_case_status' case.id %}" class="btn btn-sm btn-outline-primary">เปลี่ยนสถานะ</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-warning text-center" role="alert">
+                ไม่พบเรื่องร้องเรียนในสถานะนี้
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

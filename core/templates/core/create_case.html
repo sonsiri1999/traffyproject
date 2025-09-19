@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block title %}แจ้งปัญหาใหม่{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card p-4 mx-auto" style="max-width: 700px;">
+        <h1 class="text-center text-primary mb-4">📝 แจ้งปัญหาใหม่</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ case_form.as_p }}
+            <div class="d-grid mt-3">
+                <button type="submit" class="btn btn-primary">ส่งเรื่องร้องเรียน</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

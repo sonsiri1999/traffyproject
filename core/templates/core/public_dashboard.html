@@ -1,0 +1,92 @@
+{% extends 'core/base.html' %}
+
+{% block title %}แดชบอร์ดสาธารณะ{% endblock %}
+
+{% block content %}
+    <h1 class="text-primary mb-4">แดชบอร์ดข้อมูลสาธารณะ</h1>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card p-4">
+                <h3 class="card-title text-center">จำนวนเรื่องร้องเรียนตามสถานะ</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card p-4">
+                <h3 class="card-title text-center">ประเภทปัญหา</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    {{ status_labels|json_script:"status-labels" }}
+    {{ status_counts|json_script:"status-counts" }}
+    
+    {{ category_labels|json_script:"category-labels" }}
+    {{ category_counts|json_script:"category-counts" }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ดึงข้อมูลสำหรับกราฟแท่ง
+            var statusLabels = JSON.parse(document.getElementById('status-labels').textContent);
+            var statusCounts = JSON.parse(document.getElementById('status-counts').textContent);
+            
+            // ดึงข้อมูลสำหรับกราฟวงกลม
+            var categoryLabels = JSON.parse(document.getElementById('category-labels').textContent);
+            var categoryCounts = JSON.parse(document.getElementById('category-counts').textContent);
+
+            // สร้างกราฟแท่ง
+            var ctxStatus = document.getElementById('statusChart').getContext('2d');
+            var statusChart = new Chart(ctxStatus, {
+                type: 'bar',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        label: 'จำนวนเรื่อง',
+                        data: statusCounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(255, 159, 64, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(75, 192, 192, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // สร้างกราฟวงกลม - NEW
+            var ctxCategory = document.getElementById('categoryChart').getContext('2d');
+            var categoryChart = new Chart(ctxCategory, {
+                type: 'doughnut', // ใช้ 'doughnut' หรือ 'pie' ก็ได้
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        label: 'จำนวนเรื่อง',
+                        data: categoryCounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                        ],
+                        hoverOffset: 4
+                    }]
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+
+{% block title %}เปลี่ยนสถานะเรื่องร้องเรียน{% endblock %}
+
+{% block content %}
+    <div class="card p-4 mx-auto" style="max-width: 600px;">
+        <h1 class="card-title text-center text-primary mb-4">เปลี่ยนสถานะเรื่องร้องเรียน</h1>
+        <p class="text-center mb-3">เรื่อง: "{{ case.title }}"</p>
+        <p class="text-center mb-4">สถานะปัจจุบัน: 
+            <span class="badge bg-secondary status-badge">{{ case.get_status_display }}</span>
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="status" class="form-label">สถานะใหม่:</label>
+                <select name="status" id="status" class="form-select">
+                    {% for choice_value, choice_label in status_choices %}
+                        <option value="{{ choice_value }}" {% if choice_value == case.status %}selected{% endif %}>
+                            {{ choice_label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">บันทึก</button>
+                <a href="{% url 'case_detail' case.id %}" class="btn btn-secondary">ยกเลิก</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

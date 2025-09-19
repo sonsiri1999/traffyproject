@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block title %}โปรไฟล์ผู้ใช้{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">สวัสดี, {{ request.user.username }}</h1>
+        <a href="{% url 'logout' %}" class="btn btn-danger">ออกจากระบบ</a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>เรื่องร้องเรียนของฉัน</h3>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% if my_cases %}
+                {% for case in my_cases %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'case_detail' case.id %}">{{ case.title }}</a>
+                        <span class="badge bg-secondary">{{ case.get_status_display }}</span>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item text-muted">คุณยังไม่ได้แจ้งเรื่องร้องเรียนใดๆ</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>เรื่องที่กำลังติดตาม</h3>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% if following_cases %}
+                {% for case in following_cases %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'case_detail' case.id %}">{{ case.title }}</a>
+                        <span class="badge bg-secondary">{{ case.get_status_display }}</span>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item text-muted">คุณยังไม่ได้ติดตามเรื่องร้องเรียนใดๆ</li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}

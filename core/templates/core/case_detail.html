@@ -1,0 +1,81 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ case.title }}{% endblock %}
+
+{% block content %}
+    <h1 class="text-primary">{{ case.title }}</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="mb-0">
+            <span class="badge bg-secondary status-badge">สถานะ: {{ case.get_status_display }}</span>
+            <span class="badge bg-secondary status-badge">หมวดหมู่: {{ case.get_category_display }}</span>
+            <span class="badge bg-info text-dark status-badge">ผู้ติดตาม: {{ case.follower_count }} คน</span>
+        </p>
+        {% if request.user.is_authenticated %}
+            <form method="post" class="ms-auto">
+                {% csrf_token %}
+                <input type="hidden" name="toggle_follow" value="true">
+                <button type="submit" class="btn {% if is_following %}btn-warning{% else %}btn-outline-primary{% endif %} btn-sm">
+                    {% if is_following %}เลิกติดตาม{% else %}ติดตาม{% endif %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <p class="card-text">{{ case.description }}</p>
+                    {% if case.image_file %}
+                        <img src="{{ case.image_file.url }}" alt="รูปภาพประกอบ" class="img-fluid mt-3">
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if request.user.is_staff %}
+                <div class="mb-3">
+                    <a href="{% url 'change_case_status' case.id %}" class="btn btn-success btn-sm">เปลี่ยนสถานะ</a>
+                </div>
+            {% endif %}
+
+            <h3 class="mb-3">คอมเมนต์ ({{ comments.count }})</h3>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">ส่ง</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="comment-list">
+                {% for comment in comments %}
+                    <div class="comment-card">
+                        <p class="mb-1"><strong>{{ comment.author.username }}</strong> <small class="text-muted">เมื่อ {{ comment.created_at|date:"d M Y H:i" }}</small></p>
+                        <p class="mb-0">{{ comment.content }}</p>
+                        {% if comment.image_file %}
+                            <img src="{{ comment.image_file.url }}" alt="รูปภาพคอมเมนต์" class="img-fluid comment-image">
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="text-muted">ยังไม่มีคอมเมนต์ในเรื่องนี้</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    ข้อมูลเพิ่มเติม
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>รหัสเรื่อง:</strong> {{ case.id }}</li>
+                    <li class="list-group-item"><strong>ผู้แจ้ง:</strong> {{ case.reporter.username }}</li>
+                    <li class="list-group-item"><strong>วันที่แจ้ง:</strong> {{ case.created_at|date:"d M Y" }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
