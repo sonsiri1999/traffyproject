@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load custom_filters %}
 
 {% block title %}{{ case.title }}{% endblock %}
 
@@ -39,6 +40,23 @@
             {% endif %}
 
             <h3 class="mb-3">คอมเมนต์ ({{ comments.count }})</h3>
+            
+            <div id="comment-list" class="comment-container card mb-3">
+                <div class="card-body">
+                    {% for comment in comments %}
+                        <div class="comment-card mb-3 p-3 border rounded">
+                            <p class="mb-1"><strong>{{ comment.author.username }}</strong> <small class="text-muted">เมื่อ {{ comment.created_at|date:"d M Y H:i" }}</small></p>
+                            <p class="mb-0">{{ comment.content }}</p>
+                            {% if comment.image_file %}
+                                <img src="{{ comment.image_file.url }}" alt="รูปภาพคอมเมนต์" class="img-fluid comment-image mt-2">
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center">ยังไม่มีคอมเมนต์ในเรื่องนี้</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
             <div class="card mb-3">
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data">
@@ -50,20 +68,7 @@
                     </form>
                 </div>
             </div>
-            
-            <div id="comment-list">
-                {% for comment in comments %}
-                    <div class="comment-card">
-                        <p class="mb-1"><strong>{{ comment.author.username }}</strong> <small class="text-muted">เมื่อ {{ comment.created_at|date:"d M Y H:i" }}</small></p>
-                        <p class="mb-0">{{ comment.content }}</p>
-                        {% if comment.image_file %}
-                            <img src="{{ comment.image_file.url }}" alt="รูปภาพคอมเมนต์" class="img-fluid comment-image">
-                        {% endif %}
-                    </div>
-                {% empty %}
-                    <p class="text-muted">ยังไม่มีคอมเมนต์ในเรื่องนี้</p>
-                {% endfor %}
-            </div>
+
         </div>
         <div class="col-md-4">
             <div class="card mb-4">

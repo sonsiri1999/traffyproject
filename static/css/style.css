@@ -1,0 +1,8 @@
+/* static/css/style.css */
+
+.comment-container {
+    background-color: rgba(255, 255, 255, 0.7); /* พื้นหลังสีขาวจางๆ */
+    backdrop-filter: blur(5px); /* เพิ่มเอฟเฟกต์เบลอเบาๆ ถ้าเบราว์เซอร์รองรับ */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูมีมิติ */
+}
