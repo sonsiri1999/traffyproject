@@ -1,0 +1,1 @@
+web: gunicorn ubu_traffy_fondue_project.wsgi --log-file -
