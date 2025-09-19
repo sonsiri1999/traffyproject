@@ -33,6 +33,7 @@
                     <div>
                         <span class="badge bg-secondary me-2">{{ case.get_status_display }}</span>
                         <a href="{% url 'change_case_status' case.id %}" class="btn btn-sm btn-outline-primary">เปลี่ยนสถานะ</a>
+                        <a href="{% url 'case_delete' case.id %}" class="btn btn-sm btn-danger">ลบ</a>
                     </div>
                 </div>
             {% endfor %}

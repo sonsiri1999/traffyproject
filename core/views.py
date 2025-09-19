@@ -1,4 +1,6 @@
 from tokenize import Comment
+from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -231,3 +233,13 @@ class SignUpView(generic.CreateView):
     form_class = UserCreationForm  # ใช้ UserCreationForm มาตรฐานของ Django
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
+
+
+class CaseDeleteView(UserPassesTestMixin, DeleteView):
+    model = Case
+    template_name = 'core/case_confirm_delete.html'
+    success_url = reverse_lazy('staff_dashboard')
+
+    def test_func(self):
+        # Allow only staff users to delete cases
+        return self.request.user.is_staff

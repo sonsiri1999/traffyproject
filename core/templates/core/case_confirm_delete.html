@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block title %}ยืนยันการลบ{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-danger">ยืนยันการลบเรื่องร้องเรียน</h2>
+        <p>คุณแน่ใจหรือไม่ที่จะลบเรื่องร้องเรียน **"{{ object.title }}"**?</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">ยืนยันการลบ</button>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary">ยกเลิก</a>
+        </form>
+    </div>
+{% endblock %}
