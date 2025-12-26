@@ -207,25 +207,54 @@ def home_view(request):
     return render(request, 'core/home.html', context)
 
 def public_dashboard_view(request):
-    # ดึงข้อมูลสำหรับกราฟแท่ง (Bar Chart)
-    case_status_data = Case.objects.values('status').annotate(count=Count('status')).order_by('status')
+    # ดึงปีที่มีในข้อมูลทั้งหมด
+    years = Case.objects.dates('created_at', 'year').values_list('created_at__year', flat=True).distinct().order_by('-created_at__year')
+    
+    # ชื่อเดือนภาษาไทย
+    months = [
+        (1, 'มกราคม'), (2, 'กุมภาพันธ์'), (3, 'มีนาคม'), (4, 'เมษายน'),
+        (5, 'พฤษภาคม'), (6, 'มิถุนายน'), (7, 'กรกฎาคม'), (8, 'สิงหาคม'),
+        (9, 'กันยายน'), (10, 'ตุลาคม'), (11, 'พฤศจิกายน'), (12, 'ธันวาคม')
+    ]
+
+    # รับค่าจาก Filter
+    selected_year = request.GET.get('year')
+    selected_month = request.GET.get('month')
+
+    # Queryset เริ่มต้น
+    cases = Case.objects.all()
+
+    # Filter ตามปี
+    if selected_year:
+        cases = cases.filter(created_at__year=selected_year)
+
+    # Filter ตามเดือน
+    if selected_month:
+        cases = cases.filter(created_at__month=selected_month)
+
+    # ดึงข้อมูลสำหรับกราฟแท่ง (Bar Chart) จาก Queryset ที่ Filter แล้ว
+    case_status_data = cases.values('status').annotate(count=Count('status')).order_by('status')
     
     status_labels = [item['status'] for item in case_status_data]
     status_counts = [item['count'] for item in case_status_data]
-    readable_status_labels = [dict(Case.STATUS_CHOICES)[label] for label in status_labels]
+    readable_status_labels = [dict(Case.STATUS_CHOICES).get(label, label) for label in status_labels]
 
-    # ดึงข้อมูลสำหรับกราฟวงกลม (Pie Chart) - NEW
-    case_category_data = Case.objects.values('category').annotate(count=Count('category')).order_by('category')
+    # ดึงข้อมูลสำหรับกราฟวงกลม (Pie Chart) จาก Queryset ที่ Filter แล้ว
+    case_category_data = cases.values('category').annotate(count=Count('category')).order_by('category')
     
     category_labels = [item['category'] for item in case_category_data]
     category_counts = [item['count'] for item in case_category_data]
-    readable_category_labels = [dict(Case.CATEGORY_CHOICES)[label] for label in category_labels]
+    readable_category_labels = [dict(Case.CATEGORY_CHOICES).get(label, label) for label in category_labels]
     
     context = {
         'status_labels': readable_status_labels,
         'status_counts': status_counts,
-        'category_labels': readable_category_labels, # เพิ่มข้อมูลหมวดหมู่
-        'category_counts': category_counts, # เพิ่มข้อมูลหมวดหมู่
+        'category_labels': readable_category_labels,
+        'category_counts': category_counts,
+        'years': years,
+        'months': months,
+        'selected_year': int(selected_year) if selected_year else None,
+        'selected_month': int(selected_month) if selected_month else None,
     }
     return render(request, 'core/public_dashboard.html', context)
 

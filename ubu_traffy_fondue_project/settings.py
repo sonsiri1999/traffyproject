@@ -38,6 +38,8 @@ ALLOWED_HOSTS = ['*']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGOUT_REDIRECT_URL = 'home'
+ALLOWED_HOSTS = ['8e0596400525.ngrok-free.app', 'localhost', '127.0.0.1',"8e0596400525.ngrok-free.app"]
+CSRF_TRUSTED_ORIGINS = ['https://%2A.ngrok-free.app/']
 
 # Application definition
 
