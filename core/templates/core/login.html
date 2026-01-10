@@ -8,7 +8,7 @@
     <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%; border-radius: 15px;">
         <div class="text-center mb-4">
             <h2 class="fw-bold text-primary">เข้าสู่ระบบ</h2>
-            <p class="text-muted">ยินดีต้อนรับสู่ระบบแจ้งซ่อม ม.อุบลฯ</p>
+            <p class="text-muted">ยินดีต้อนรับสู่ระบบแจ้งปัญหา </p>
         </div>
 
         {% if form.errors %}
@@ -18,32 +18,35 @@
         {% endif %}
 
         <form method="post">
-            {% csrf_token %}
-            
-            {% for field in form %}
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">{{ field.label }}</label>
-                    <input type="{{ field.field.widget.input_type }}" 
-                           name="{{ field.name }}" 
-                           class="form-control" 
-                           placeholder="{{ field.label }}">
-                </div>
-            {% endfor %}
-
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary fw-bold shadow-sm">
-                    <i class="bi bi-box-arrow-in-right"></i> เข้าสู่ระบบ
-                </button>
+    {% csrf_token %}
+    
+    {% for field in form %}
+        {# ตรวจสอบว่าไม่ใช่ฟิลด์ remember ก่อนแสดงผล #}
+        {% if field.name != 'remember' %}
+            <div class="mb-3">
+                <label class="form-label small fw-bold">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" 
+                       name="{{ field.name }}" 
+                       class="form-control" 
+                       placeholder="{{ field.label }}">
             </div>
+        {% endif %}
+    {% endfor %}
 
-            <div class="text-center my-3 text-muted small">หรือ</div>
+    <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-primary fw-bold shadow-sm">
+            <i class="bi bi-box-arrow-in-right"></i> เข้าสู่ระบบ
+        </button>
+    </div>
 
-            <div class="d-grid gap-2">
-                <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger shadow-sm fw-bold">
-                    <i class="bi bi-google me-2"></i> เข้าสู่ระบบด้วย Google
-                </a>
-            </div>
-        </form>
+    <div class="text-center my-3 text-muted small">หรือ</div>
+
+    <div class="d-grid gap-2">
+        <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger shadow-sm fw-bold">
+            <i class="bi bi-google me-2"></i> เข้าสู่ระบบด้วย Google
+        </a>
+    </div>
+</form>
 
         <hr class="mt-4">
         <p class="mb-0 text-center small">
