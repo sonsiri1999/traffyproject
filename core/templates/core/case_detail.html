@@ -4,7 +4,7 @@
 {% block title %}{{ case.title }}{% endblock %}
 
 {% block content %}
-    <h1 class="text-primary">{{ case.title }}</h1>
+    <h1 class="fw-bold text-white">{{ case.title }}</h1>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <p class="mb-0">
             <span class="badge bg-secondary status-badge">สถานะ: {{ case.get_status_display }}</span>
@@ -15,7 +15,7 @@
             <form method="post" class="ms-auto">
                 {% csrf_token %}
                 <input type="hidden" name="toggle_follow" value="true">
-                <button type="submit" class="btn {% if is_following %}btn-warning{% else %}btn-outline-primary{% endif %} btn-sm">
+                <button type="submit" class="btn {% if is_following %}btn-secondary{% else %}btn-success{% endif %} btn-sm">
                     {% if is_following %}เลิกติดตาม{% else %}ติดตาม{% endif %}
                 </button>
             </form>
