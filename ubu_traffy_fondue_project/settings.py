@@ -94,15 +94,15 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # 6. Static & Media Files (สำหรับ Production)
+MEDIA_URL = '/media/'
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # ใช้ WhiteNoise ช่วยเสิร์ฟไฟล์ Static
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # 7. Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -112,3 +112,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Bangkok' # เปลี่ยนเป็นเวลาไทย
 USE_I18N = True
 USE_TZ = True
+
+print(f"DEBUG status: {DEBUG}")
+print(f"MEDIA_ROOT is: {MEDIA_ROOT}")
