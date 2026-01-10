@@ -15,6 +15,37 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
         }
+        .navbar {
+        /* เพิ่มเงาให้แถบ Navbar เพื่อให้ดูมีมิติแยกจากพื้นหลัง */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+        }
+        .navbar-dark .navbar-nav .nav-link {
+        color: #ffffff !important; /* บังคับให้เป็นสีขาวบริสุทธิ์ */
+        font-weight: 600;          /* เพิ่มความหนาของตัวหนังสือ */
+        font-size: 1.05rem;       /* ปรับขนาดให้ใหญ่ขึ้นเล็กน้อย */
+        transition: all 0.3s ease;
+        }
+        .navbar-dark .navbar-nav .nav-link:hover {
+        color: #ffc107 !important; /* เมื่อเอาเมาส์วาง ให้เปลี่ยนเป็นสีเหลืองทอง UBU */
+        text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.5);
+        }
+        .navbar-dark .navbar-nav .dropdown-toggle {
+        color: #ffffff !important;
+        font-weight: 700;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
+        }
+        .case-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+        
         /* เพิ่ม CSS ที่ใช้ซ้ำในหลายๆ หน้าที่นี่ */
         .status-badge {
             font-size: 1rem;

@@ -16,6 +16,8 @@ urlpatterns = [
     path('staff/dashboard/', views.staff_dashboard_view, name='staff_dashboard'),
     path('dashboard/', views.public_dashboard_view, name='public_dashboard'),
     path('delete/<int:pk>/', CaseDeleteView.as_view(), name='case_delete'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/password/', views.change_password, name='change_password'),
 
 
 

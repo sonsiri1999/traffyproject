@@ -11,6 +11,11 @@ from django.db.models import Count
 from .forms import CaseForm, CommentForm
 from django.views import generic
 from django.urls import reverse_lazy
+from .forms import EditProfileForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+
 def home_view(request):
     # ดึงข้อมูลเคสทั้งหมดจากฐานข้อมูล เรียงจากล่าสุดไปเก่าสุด
     all_cases = Case.objects.all().order_by('-created_at')
@@ -92,6 +97,35 @@ def create_case_view(request):
         'case_form': case_form,
     }
     return render(request, 'core/create_case.html', context)
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        # ฟอร์มแก้ไขข้อมูลทั่วไป (เช่น email, ชื่อ)
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'แก้ไขข้อมูลส่วนตัวเรียบร้อยแล้ว')
+            return redirect('profile')
+    else:
+        form = EditProfileForm(instance=request.user)
+    return render(request, 'core/edit_profile.html', {'form': form})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # สำคัญ: อัปเดตเซสชันเพื่อให้ไม่ต้อง Login ใหม่
+            update_session_auth_hash(request, user)
+            messages.success(request, 'เปลี่ยนรหัสผ่านสำเร็จแล้ว')
+            return redirect('profile')
+        else:
+            messages.error(request, 'กรุณาตรวจสอบข้อผิดพลาดด้านล่าง')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'core/change_password.html', {'form': form})
 
 def case_detail_view(request, case_id):
     case = get_object_or_404(Case.objects.annotate(

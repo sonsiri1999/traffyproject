@@ -25,3 +25,16 @@ class CommentForm(forms.ModelForm):
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         fields = ('username',)
+
+class EditProfileForm(UserChangeForm):
+    # ปิดฟิลด์รหัสผ่านในฟอร์มนี้ เพราะเรามีฟอร์มแยกต่างหาก
+    password = None 
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
+        labels = {
+            'first_name': 'ชื่อจริง',
+            'last_name': 'นามสกุล',
+            'email': 'อีเมล',
+        }

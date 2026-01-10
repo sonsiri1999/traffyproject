@@ -4,10 +4,35 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="text-primary">สวัสดี, {{ request.user.username }}</h1>
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-    </form>
+    <h1 class="text-white fw-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+    สวัสดี, {{ request.user.first_name|default:request.user.username }}
+</h1>
+    </div>
+
+<div class="card mb-4 border-info">
+    <div class="card-header bg-info text-white">
+        <h3 class="mb-0">ข้อมูลส่วนตัว</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>ชื่อ-นามสกุล:</strong> {{ request.user.get_full_name|default:"ไม่ได้ระบุ" }}</p>
+        <p><strong>อีเมล:</strong> {{ request.user.email|default:"ไม่ได้ระบุ" }}</p>
+        <p><strong>ชื่อผู้ใช้งาน (Username):</strong> {{ request.user.username }}</p>
+    </div>
+    
+    <div class="btn-group">
+        <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil-square"></i> แก้ไขข้อมูลส่วนตัว
+        </a>
+        
+        <a href="{% url 'change_password' %}" class="btn btn-outline-warning">
+            <i class="bi bi-key"></i> เปลี่ยนรหัสผ่าน
+        </a>
+
+        <form method="post" action="{% url 'logout' %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger ms-2">ออกจากระบบ</button>
+        </form>
+    </div>
 </div>
     
     <div class="card mb-4">
