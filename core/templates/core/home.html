@@ -31,68 +31,45 @@
     <!-- Filter/Sort Bar (Optional, mimicking 'FilterBar') -->
     <div class="d-flex justify-content-between align-items-center mb-4 px-2">
         <h4 class="text-white fw-bold text-shadow">รายการร้องเรียนล่าสุด</h4>
-        <div class="dropdown">
-            <button class="btn btn-sm btn-light dropdown-toggle rounded-pill px-3 shadow-sm" type="button" data-bs-toggle="dropdown">
-                เรียงตาม
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-3">
-                <li><a class="dropdown-item rounded" href="?sort=-created_at">ใหม่สุด</a></li>
-                <li><a class="dropdown-item rounded" href="?sort=created_at">เก่าสุด</a></li>
-                <li><a class="dropdown-item rounded" href="?sort=-follower_count">ยอดนิยม</a></li>
-            </ul>
+        
+        <div class="d-flex gap-2">
+            <!-- Search Form -->
+            <form action="." method="get" class="d-flex">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-0 rounded-start-pill ps-3">
+                        <i class="fa-solid fa-search text-muted"></i>
+                    </span>
+                    <input type="text" name="q" class="form-control border-0 rounded-end-pill me-2" 
+                           placeholder="ค้นหาตามชื่อเรื่อง..." 
+                           value="{{ query|default:'' }}" 
+                           style="min-width: 200px;"
+                           hx-get="." 
+                           hx-trigger="keyup changed delay:500ms, search" 
+                           hx-target="#case-list-container" 
+                           hx-push-url="true">
+                </div>
+                <!-- Keep sort parameter if exists -->
+                {% if request.GET.sort %}
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                {% endif %}
+            </form>
+
+            <div class="dropdown">
+                <button class="btn btn-sm btn-light dropdown-toggle rounded-pill px-3 shadow-sm h-100" type="button" data-bs-toggle="dropdown">
+                    เรียงตาม
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-3">
+                    <li><a class="dropdown-item rounded" href="?sort=-created_at{% if query %}&q={{ query }}{% endif %}">ใหม่สุด</a></li>
+                    <li><a class="dropdown-item rounded" href="?sort=created_at{% if query %}&q={{ query }}{% endif %}">เก่าสุด</a></li>
+                    <li><a class="dropdown-item rounded" href="?sort=-follower_count{% if query %}&q={{ query }}{% endif %}">ยอดนิยม</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <!-- Case Grid -->
-    <div class="row g-4">
-        {% for case in all_cases %}
-        <div class="col-md-6 col-lg-4">
-            <div class="card-glass h-100 position-relative">
-                <div class="card-body p-4 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="status-badge 
-                            {% if case.status == 'pending' %}status-pending
-                            {% elif case.status == 'in_progress' %}status-working
-                            {% else %}status-done{% endif %}">
-                            {{ case.get_status_display }}
-                        </span>
-                        <small class="text-muted">{{ case.created_at|date:"d M Y" }}</small>
-                    </div>
-
-                    <h5 class="card-title fw-bold">
-                        <a href="{% url 'case_detail' case.id %}" class="text-decoration-none text-dark stretched-link">
-                            {{ case.title|truncatechars:40 }}
-                        </a>
-                    </h5>
-                    
-                    <p class="card-text text-muted small flex-grow-1">
-                        {{ case.description|truncatechars:80 }}
-                    </p>
-
-                    <div class="d-flex align-items-center justify-content-between mt-3 pt-3 border-top">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-light rounded-circle text-primary d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                                <i class="fa-solid fa-user small"></i>
-                            </div>
-                            <span class="small text-muted">{{ case.reporter.username }}</span>
-                        </div>
-                        <div class="small fw-bold text-primary">
-                            <i class="fa-solid fa-users me-1"></i> {{ case.follower_count }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="card-glass p-5 text-center">
-                <i class="fa-solid fa-clipboard-check fa-4x text-muted mb-3 opacity-50"></i>
-                <h3>ยังไม่มีเรื่องร้องเรียน</h3>
-                <p class="text-muted">เป็นคนแรกที่ช่วยให้มหาลัยน่าอยู่ขึ้น!</p>
-                <a href="{% url 'create_case' %}" class="btn btn-outline-primary rounded-pill mt-2">แจ้งเรื่องเลย</a>
-            </div>
-        </div>
-        {% endfor %}
+    <div class="row g-4" id="case-list-container">
+        {% include 'core/partials/case_list.html' %}
     </div>
 
     <div class="text-center mt-5">

@@ -228,16 +228,31 @@ def staff_dashboard_view(request):
 def home_view(request):
     # ดึงค่าการเรียงลำดับจาก URL ถ้าไม่มีให้เรียงตามวันที่สร้างล่าสุด
     sort_by = request.GET.get('sort', '-created_at')
+    
+    # รับคำค้นหา
+    query = request.GET.get('q')
 
     # ดึงข้อมูลเคสทั้งหมด พร้อมทั้งนับจำนวนผู้ติดตาม
     all_cases = Case.objects.annotate(
         follower_count=Count('followers')
-    ).order_by(sort_by)
+    )
+
+    # กรองข้อมูลถ้ามีการค้นหา
+    if query:
+        all_cases = all_cases.filter(title__icontains=query)
+
+    # เรียงลำดับข้อมูล
+    all_cases = all_cases.order_by(sort_by)
 
     context = {
         'all_cases': all_cases,
         'status_choices': Case.STATUS_CHOICES, # ส่งตัวเลือกสถานะไปด้วย
+        'query': query, # ส่งคำค้นหากลับไปที่ Template เพื่อแสดงในช่องค้นหา
     }
+
+    if request.headers.get('HX-Request') == 'true':
+        return render(request, 'core/partials/case_list.html', context)
+
     return render(request, 'core/home.html', context)
 
 def public_dashboard_view(request):
