@@ -1,156 +1,104 @@
 {% extends 'core/base.html' %}
-{% load custom_filters %}
-
-{% block title %}หน้าแรก - UBU Traffy Fondue{% endblock %}
+{% load static %}
 
 {% block content %}
-    <h1 class="text-white text-center fw-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">รายการเรื่องร้องเรียน</h1>
+<!-- Hero Section -->
+<div class="hero-section">
+    <!-- Overlay & Background logic handles by CSS on .hero-section and .hero-overlay -->
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content container" style="position: relative; z-index: 20;">
+        <div class="pill-badge">
+            UBU Traffy Fondue 2026
+        </div>
+        <h1 class="hero-title mb-3">
+            ร่วมสร้างมหาวิทยาลัย<br class="d-none d-sm-block">ให้น่าอยู่กว่าเดิม
+        </h1>
+        <p class="lead text-light opacity-75 mb-4" style="max-width: 600px; margin: 0 auto;">
+            ระบบแจ้งและติดตามปัญหาภายในมหาวิทยาลัยอุบลราชธานี เพื่อคุณภาพชีวิตที่ดีของนักศึกษาและบุคลากร
+        </p>
+        
+        <a href="{% url 'create_case' %}" class="btn hero-btn text-decoration-none">
+            <i class="fa-solid fa-plus me-2"></i>
+            แจ้งเรื่องร้องเรียนใหม่
+        </a>
+    </div>
+</div>
 
-    <div class="mb-3 d-flex justify-content-end">
+<!-- Main Content -->
+<div class="container pb-5" style="margin-top: -30px; position: relative; z-index: 10;">
+    
+    <!-- Filter/Sort Bar (Optional, mimicking 'FilterBar') -->
+    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+        <h4 class="text-white fw-bold text-shadow">รายการร้องเรียนล่าสุด</h4>
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-sm btn-light dropdown-toggle rounded-pill px-3 shadow-sm" type="button" data-bs-toggle="dropdown">
                 เรียงตาม
             </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'home' %}?sort=-created_at">ใหม่สุด</a></li>
-                <li><a class="dropdown-item" href="{% url 'home' %}?sort=created_at">เก่าสุด</a></li>
-                <li><a class="dropdown-item" href="{% url 'home' %}?sort=-follower_count">จำนวนผู้ติดตาม (มากสุด)</a></li>
-                <li><a class="dropdown-item" href="{% url 'home' %}?sort=follower_count">จำนวนผู้ติดตาม (น้อยสุด)</a></li>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-3">
+                <li><a class="dropdown-item rounded" href="?sort=-created_at">ใหม่สุด</a></li>
+                <li><a class="dropdown-item rounded" href="?sort=created_at">เก่าสุด</a></li>
+                <li><a class="dropdown-item rounded" href="?sort=-follower_count">ยอดนิยม</a></li>
             </ul>
         </div>
     </div>
 
-    {% if all_cases %}
+    <!-- Case Grid -->
+    <div class="row g-4">
         {% for case in all_cases %}
-            <div class="case-card">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2><a href="{% url 'case_detail' case.id %}">{{ case.title }}</a></h2>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                        </svg>
-                        {{ case.follower_count }} ผู้ติดตาม
-                    </span>
-                </div>
-                <p class="text-muted mb-1">รหัสเรื่อง: {{ case.id }}</p>
-                <span class="status-{{ case.status }}">สถานะ: {{ case.get_status_display }}</span>
-            </div>
-        {% endfor %}
-    {% else %}
-        <div class="alert alert-info text-center">
-            ยังไม่มีเรื่องร้องเรียนในระบบ
-        </div>
-    {% endif %}
-
-    <footer class="text-center mt-4 text-secondary">
-        © 2025 UBU Traffy Fondue | ระบบแจ้งปัญหาภายในมหาวิทยาลัย Powered By องค์การนักศึกษามหาวิทยาลัยอุบลราชธานี
-    </footer>
-{% endblock %}
-
-<!-- 
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <title>หน้าแรก - UBU Traffy Fondue</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .case-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-        .case-card:hover {
-             transform: translateY(-3px);
-        }
-        .case-card h2 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-        .case-card a {
-            text-decoration: none;
-            color: #004080;
-            font-weight: bold;
-        }
-        .case-card a:hover {
-            color: #ff5733;
-        }
-        .status-pending { color: #dc3545; }
-        .status-in_progress { color: #ffc107; }
-        .status-resolved { color: #28a745; }
-    </style>
-</head>
-<body>
-    <div class="container mt-4">
-
-        <nav class="d-flex justify-content-between align-items-center bg-primary p-2 rounded mb-4">
-            <div>
-                {% if user.is_authenticated %}
-                    <span class="text-white">สวัสดี, <a href="{% url 'profile' %}" class="text-white">{{ user.username }}</a></span>
-                    <a href="{% url 'create_case' %}" class="btn btn-warning btn-sm ms-2">แจ้งปัญหาใหม่</a>
-                    {% if user.is_staff %}
-                        <a href="{% url 'staff_dashboard' %}" class="btn btn-success btn-sm ms-2">แดชบอร์ดเจ้าหน้าที่</a>
-                    {% endif %}
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-light btn-sm">เข้าสู่ระบบ</a>
-                    <a href="{% url 'signup' %}" class="btn btn-outline-light btn-sm ms-2">สมัครสมาชิก</a>
-                {% endif %}
-            </div>
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">ออกจากระบบ</a>
-            {% endif %}
-        </nav>
-
-                <h1 class="mt-4 mb-4 text-center text-primary">รายการเรื่องร้องเรียน</h1>
-
-                <div class="mb-3 d-flex justify-content-end">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    เรียงตาม
-                </button>
-            <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'home' %}?sort=-created_at">ใหม่สุด</a></li>
-                    <li><a class="dropdown-item" href="{% url 'home' %}?sort=created_at">เก่าสุด</a></li>
-                    <li><a class="dropdown-item" href="{% url 'home' %}?sort=-follower_count">จำนวนผู้ติดตาม (มากสุด)</a></li>
-                    <li><a class="dropdown-item" href="{% url 'home' %}?sort=follower_count">จำนวนผู้ติดตาม (น้อยสุด)</a></li>
-                 </ul>
-            </div>
-        </div>
-
-            {% if all_cases %}
-            {% for case in all_cases %}
-             <div class="case-card">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2><a href="{% url 'case_detail' case.id %}">{{ case.title }}</a></h2>
-                        <span class="badge rounded-pill bg-info text-dark">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                </svg>
-                            {{ case.follower_count }} ผู้ติดตาม
+        <div class="col-md-6 col-lg-4">
+            <div class="card-glass h-100 position-relative">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="status-badge 
+                            {% if case.status == 'pending' %}status-pending
+                            {% elif case.status == 'in_progress' %}status-working
+                            {% else %}status-done{% endif %}">
+                            {{ case.get_status_display }}
                         </span>
-                     </div>
-                    <p class="text-muted mb-1">รหัสเรื่อง: {{ case.id }}</p>
-                    <span class="status-{{ case.status }}">สถานะ: {{ case.get_status_display }}</span>
+                        <small class="text-muted">{{ case.created_at|date:"d M Y" }}</small>
+                    </div>
+
+                    <h5 class="card-title fw-bold">
+                        <a href="{% url 'case_detail' case.id %}" class="text-decoration-none text-dark stretched-link">
+                            {{ case.title|truncatechars:40 }}
+                        </a>
+                    </h5>
+                    
+                    <p class="card-text text-muted small flex-grow-1">
+                        {{ case.description|truncatechars:80 }}
+                    </p>
+
+                    <div class="d-flex align-items-center justify-content-between mt-3 pt-3 border-top">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light rounded-circle text-primary d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                <i class="fa-solid fa-user small"></i>
+                            </div>
+                            <span class="small text-muted">{{ case.reporter.username }}</span>
+                        </div>
+                        <div class="small fw-bold text-primary">
+                            <i class="fa-solid fa-users me-1"></i> {{ case.follower_count }}
+                        </div>
+                    </div>
                 </div>
-             {% endfor %}
-         {% else %}
-             <div class="alert alert-info text-center">
-                 ยังไม่มีเรื่องร้องเรียนในระบบ
             </div>
-         {% endif %}
-
-            <footer class="text-center mt-4 text-secondary">
-            © 2025 UBU Traffy Fondue | ระบบแจ้งปัญหาภายในมหาวิทยาลัย Powered By องค์การนักศึกษามหาวิทยาลัยอุบลราชธานี
-        </footer>
-
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card-glass p-5 text-center">
+                <i class="fa-solid fa-clipboard-check fa-4x text-muted mb-3 opacity-50"></i>
+                <h3>ยังไม่มีเรื่องร้องเรียน</h3>
+                <p class="text-muted">เป็นคนแรกที่ช่วยให้มหาลัยน่าอยู่ขึ้น!</p>
+                <a href="{% url 'create_case' %}" class="btn btn-outline-primary rounded-pill mt-2">แจ้งเรื่องเลย</a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html> --> 
+    <div class="text-center mt-5">
+        <a href="?all=true" class="btn btn-outline-light rounded-pill px-4 py-2">
+            ดูรายการทั้งหมด
+        </a>
+    </div>
+</div>
+{% endblock %}

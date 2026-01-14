@@ -1,8 +1,165 @@
-/* static/css/style.css */
+/* 1. ตั้งค่าพื้นฐาน */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --bg-color: #f8f9fa;
+    --text-color: #2b2d42;
+    --font-main: 'Prompt', sans-serif;
+}
 
-.comment-container {
-    background-color: rgba(255, 255, 255, 0.7); /* พื้นหลังสีขาวจางๆ */
-    backdrop-filter: blur(5px); /* เพิ่มเอฟเฟกต์เบลอเบาๆ ถ้าเบราว์เซอร์รองรับ */
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูมีมิติ */
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    /* Gradient Background resembling the React design */
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(222,47%,11%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+/* ทำให้เนื้อหาไม่จมไปกับ Navbar */
+.main-content {
+    padding-top: 80px; /* Reduced padding for cleaner look */
+    min-height: 85vh;
+}
+
+/* 2. Navbar แบบกระจก (Glassmorphism) */
+.navbar-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.nav-link {
+    color: #444 !important;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+/* 3. Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 400px; /* sm:h-[400px] */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    margin-top: -80px; /* Pull up behind navbar if desired, or adjust */
+    padding-top: 80px;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(30, 58, 138, 0.8), transparent); /* blue-900/80 to background */
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    animation: fadeInZoom 0.7s ease-out;
+}
+
+@keyframes fadeInZoom {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.pill-badge {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    line-height: 1.2;
+}
+
+@media (min-width: 576px) {
+    .hero-title {
+        font-size: 3.75rem; /* text-6xl */
+    }
+}
+
+.hero-btn {
+    background-color: white; /* สีปกติ: ขาว */
+    color: var(--primary-color); /* ตัวหนังสือปกติ: น้ำเงิน */
+    border: 2px solid white; /* ขอบขาว */
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.hero-btn:hover {
+    background-color: var(--primary-color) !important; /* เปลี่ยนพื้นหลังเป็นสีน้ำเงิน */
+    color: white !important; /* บังคับตัวหนังสือสีขาว */
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 20px rgba(67, 97, 238, 0.6); /* เพิ่มเงาฟุ้งๆ ให้ดูทันสมัย */
+    transform: translateY(-3px); /* ลอยขึ้นนิดนึง */
+}
+
+/* 4. การ์ด (Card) ให้ดูลอยและนุ่มนวล */
+.card-glass {
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+.card-glass:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-pending { background-color: #fee2e2; color: #991b1b; } /* Red */
+.status-working { background-color: #fef3c7; color: #92400e; } /* Yellow */
+.status-done { background-color: #d1fae5; color: #065f46; } /* Green */
+
+/* 5. Footer */
+.footer {
+    background: white;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 3rem 0;
+    color: #6c757d;
 }
