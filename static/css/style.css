@@ -6,6 +6,7 @@
     --bg-color: #f8f9fa;
     --text-color: #2b2d42;
     --font-main: 'Prompt', sans-serif;
+    --navbar-height: 80px;
 }
 
 body {
@@ -24,20 +25,30 @@ body {
 
 /* ทำให้เนื้อหาไม่จมไปกับ Navbar */
 .main-content {
-    padding-top: 80px; /* Reduced padding for cleaner look */
+    padding-top: var(--navbar-height); /* Reduced padding for cleaner look */
     min-height: 85vh;
 }
 
 /* 2. Navbar แบบกระจก (Glassmorphism) */
+/* 2. Navbar แบบกระจก (Glassmorphism) */
 .navbar-glass {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.8); /* ปรับความชัด */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
+    
+    /* เพิ่ม: บังคับให้ Navbar ติดอยู่ด้านบน */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
 }
-
 .nav-link {
     color: #444 !important;
     font-weight: 500;
@@ -51,7 +62,8 @@ body {
 /* 3. Hero Section Styles */
 .hero-section {
     position: relative;
-    height: 400px; /* sm:h-[400px] */
+    min-height: 500px; 
+    padding-bottom: 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -59,8 +71,9 @@ body {
     text-align: center;
     color: white;
     overflow: hidden;
-    margin-top: -80px; /* Pull up behind navbar if desired, or adjust */
-    padding-top: 80px;
+    /* ใช้ตัวแปรคำนวณระยะอัตโนมัติ */
+    margin-top: calc(var(--navbar-height) * -1); 
+    padding-top: var(--navbar-height);
 }
 
 .hero-overlay {
@@ -68,6 +81,7 @@ body {
     top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(to bottom, rgba(30, 58, 138, 0.8), transparent); /* blue-900/80 to background */
     z-index: 1;
+    pointer-events: none;
 }
 
 .hero-content {
@@ -92,6 +106,7 @@ body {
     font-weight: 500;
     display: inline-block;
     margin-bottom: 0.5rem;
+    margin-top: 50px;
 }
 
 .hero-title {
@@ -115,6 +130,11 @@ body {
     border-radius: 50px;
     font-weight: 600;
     transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    z-index: 100 !important; /* ยกให้สูงกว่าทุกอย่างใน Hero */
+    cursor: pointer;
 }
 
 .hero-btn:hover {
