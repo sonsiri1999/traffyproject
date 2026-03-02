@@ -37,13 +37,13 @@
     <div class="col-md-6 mb-4">
         <div class="card p-4">
             <h3 class="card-title text-center">จำนวนเรื่องร้องเรียนตามสถานะ</h3>
-            <canvas id="statusChart"></canvas>
+            <canvas id="statusChart" style="max-height: 500px;"></canvas>
         </div>
     </div>
     <div class="col-md-6 mb-4">
         <div class="card p-4">
             <h3 class="card-title text-center">ประเภทปัญหา</h3>
-            <canvas id="categoryChart"></canvas>
+            <canvas id="categoryChart" style="max-height: 500px;"></canvas>
         </div>
     </div>
 </div>
@@ -88,6 +88,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 animation: {
                     duration: 2000,
                     easing: 'easeOutBounce'
@@ -121,6 +122,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 animation: {
                     animateScale: true,
                     animateRotate: true,

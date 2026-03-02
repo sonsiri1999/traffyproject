@@ -28,14 +28,17 @@
                 <div class="card-body">
                     <p class="card-text">{{ case.description }}</p>
                     {% if case.image_file %}
-                        <img src="{{ case.image_file.url }}" alt="รูปภาพประกอบ" class="img-fluid mt-3">
+                        <img src="{{ case.image_file.url }}" alt="รูปภาพประกอบ" class="img-fluid mt-3" style="max-height: 600px; max-width: 100%; object-fit: contain;">
                     {% endif %}
                 </div>
             </div>
             
-            {% if request.user.is_staff %}
-                <div class="mb-3">
-                    <a href="{% url 'change_case_status' case.id %}" class="btn btn-success btn-sm">เปลี่ยนสถานะ</a>
+            {% if request.user.is_authenticated and request.user == case.reporter or request.user.is_staff %}
+                <div class="mb-3 d-flex gap-2">
+                    <a href="{% url 'edit_case' case_id=case.id %}" class="btn btn-warning btn-sm">✏️ แก้ไขเคส</a>
+                    {% if request.user.is_staff %}
+                        <a href="{% url 'change_case_status' case.id %}" class="btn btn-success btn-sm">เปลี่ยนสถานะ</a>
+                    {% endif %}
                 </div>
             {% endif %}
 
@@ -48,7 +51,7 @@
                             <p class="mb-1"><strong>{{ comment.author.username }}</strong> <small class="text-muted">เมื่อ {{ comment.created_at|date:"d M Y H:i" }}</small></p>
                             <p class="mb-0">{{ comment.content }}</p>
                             {% if comment.image_file %}
-                                <img src="{{ comment.image_file.url }}" alt="รูปภาพคอมเมนต์" class="img-fluid comment-image mt-2">
+                                <img src="{{ comment.image_file.url }}" alt="รูปภาพคอมเมนต์" class="img-fluid comment-image mt-2" style="max-height: 400px; max-width: 100%; object-fit: contain;">
                             {% endif %}
                         </div>
                     {% empty %}

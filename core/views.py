@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Case, Follow, Comment ,Image
 from django.contrib import messages
 from django.db.models import Count
-from .forms import CaseForm, CommentForm
+from .forms import CaseForm, CommentForm, CaseEditForm
 from django.views import generic
 from django.urls import reverse_lazy
 from .forms import EditProfileForm
@@ -39,7 +39,7 @@ def signup_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('home')  # ไปหน้าแรกหลังจากสมัครสำเร็จ
     else:
         form = UserCreationForm()
@@ -306,6 +306,27 @@ def public_dashboard_view(request):
         'selected_month': int(selected_month) if selected_month else None,
     }
     return render(request, 'core/public_dashboard.html', context)
+
+@login_required
+def edit_case_view(request, case_id):
+    case = get_object_or_404(Case, id=case_id)
+
+    # ตรวจสอบสิทธิ์: เจ้าของเคสหรือ admin เท่านั้น
+    if request.user != case.reporter and not request.user.is_staff:
+        messages.error(request, 'คุณไม่มีสิทธิ์แก้ไขเคสนี้')
+        return redirect('case_detail', case_id=case.id)
+
+    if request.method == 'POST':
+        form = CaseEditForm(request.POST, request.FILES, instance=case)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'แก้ไขเคสเรียบร้อยแล้ว')
+            return redirect('case_detail', case_id=case.id)
+    else:
+        form = CaseEditForm(instance=case)
+
+    return render(request, 'core/edit_case.html', {'form': form, 'case': case})
+
 
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm  # ใช้ UserCreationForm มาตรฐานของ Django

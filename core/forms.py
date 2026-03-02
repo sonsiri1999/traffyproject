@@ -5,16 +5,26 @@ from .models import Case, Comment
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-class CaseForm(forms.ModelForm):
+# class CaseForm(forms.ModelForm):
 
-    class Meta:
-        model = Case
-        fields = ['title', 'description', 'category']
+#     class Meta:
+#         model = Case
+#         fields = ['title', 'description', 'category']
 
 class CaseForm(forms.ModelForm):
     class Meta:
         model = Case
         fields = ['title', 'description', 'category', 'image_file']
+
+
+class CaseEditForm(forms.ModelForm):
+    class Meta:
+        model = Case
+        fields = ['description', 'image_file']
+        labels = {
+            'description': 'คำอธิบายเคส',
+            'image_file': 'รูปภาพประกอบ',
+        }
 
 
 class CommentForm(forms.ModelForm):
@@ -27,7 +37,7 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username',)
 
 class EditProfileForm(UserChangeForm):
-    # ปิดฟิลด์รหัสผ่านในฟอร์มนี้ เพราะเรามีฟอร์มแยกต่างหาก
+    # ปิดฟิลด์รหัสผ่านในฟอร์มนี้ มีฟอร์มแยกต่างหาก
     password = None 
 
     class Meta:
