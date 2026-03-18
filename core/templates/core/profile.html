@@ -1,73 +1,359 @@
 {% extends 'core/base.html' %}
 
-{% block title %}โปรไฟล์ผู้ใช้{% endblock %}
+{% block title %}โปรไฟล์ - UBU Traffy Fondue{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ─── Profile Hero ─────────────────────────────────────── */
+    .profile-hero {
+        background: linear-gradient(135deg, #0d6efd 0%, #3d9bff 100%);
+        border-radius: 20px;
+        padding: 2.5rem 2rem 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-hero::before {
+        content: '';
+        position: absolute;
+        top: -40px; right: -40px;
+        width: 200px; height: 200px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+    }
+
+    .profile-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -60px; left: -20px;
+        width: 160px; height: 160px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 50%;
+    }
+
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        border: 3px solid rgba(255,255,255,0.4);
+        backdrop-filter: blur(6px);
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+    }
+
+    /* ─── Stat Cards ────────────────────────────────────────── */
+    .stat-card {
+        background: white;
+        border-radius: 14px;
+        padding: 1.1rem 1rem;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        border: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.11);
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.78rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    /* ─── Info Card ─────────────────────────────────────────── */
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        border: none;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-card-header {
+        padding: 1rem 1.4rem;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fafbfc;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-card-header i {
+        color: #0d6efd;
+    }
+
+    .info-card-body {
+        padding: 1.2rem 1.4rem;
+    }
+
+    /* ─── Info Row ──────────────────────────────────────────── */
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 0.9rem;
+    }
+
+    .info-row:last-child { border-bottom: none; }
+
+    .info-row .info-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0d6efd;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .info-row .info-label {
+        color: #9ca3af;
+        font-size: 0.78rem;
+        line-height: 1;
+    }
+
+    .info-row .info-value {
+        font-weight: 500;
+        color: #1f2937;
+    }
+
+    /* ─── Action Buttons ────────────────────────────────────── */
+    .btn-action {
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.55rem 1.1rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* ─── Case List ─────────────────────────────────────────── */
+    .case-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.85rem 1.4rem;
+        border-bottom: 1px solid #f5f5f5;
+        transition: background 0.15s ease;
+        gap: 0.75rem;
+    }
+
+    .case-item:last-child { border-bottom: none; }
+
+    .case-item:hover { background: #f9fafb; }
+
+    .case-item a {
+        text-decoration: none;
+        color: #1f2937;
+        font-weight: 500;
+        font-size: 0.9rem;
+        flex: 1;
+        line-height: 1.4;
+    }
+
+    .case-item a:hover { color: #0d6efd; }
+
+    .empty-state {
+        padding: 2.5rem 1rem;
+        text-align: center;
+        color: #adb5bd;
+    }
+
+    .empty-state i {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    /* ─── Status Badges ─────────────────────────────────────── */
+    .badge-status {
+        border-radius: 20px;
+        font-size: 0.72rem;
+        padding: 0.3rem 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="text-white fw-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
-    สวัสดี, {{ request.user.first_name|default:request.user.username }}
-</h1>
+<div class="container py-4" style="max-width: 820px;">
+
+    <!-- ─── Hero Section ───────────────────────────────────── -->
+    <div class="profile-hero">
+        <div class="d-flex align-items-center gap-3" style="position:relative; z-index:1;">
+            <div class="avatar-circle">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+                <h4 class="fw-bold mb-0">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </h4>
+                <p class="mb-0 opacity-75" style="font-size:0.87rem;">
+                    @{{ request.user.username }}
+                    {% if request.user.is_staff %}
+                    <span class="badge ms-1" style="background:rgba(255,255,255,0.25); font-size:0.72rem;">เจ้าหน้าที่</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
     </div>
 
-<div class="card mb-4 border-info">
-    <div class="card-header bg-info text-white">
-        <h3 class="mb-0">ข้อมูลส่วนตัว</h3>
+    <!-- ─── Stats Row ──────────────────────────────────────── -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number text-primary">{{ my_cases|length }}</div>
+                <div class="stat-label">เรื่องที่แจ้ง</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number" style="color:#8b5cf6;">{{ following_cases|length }}</div>
+                <div class="stat-label">เรื่องที่ติดตาม</div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <p><strong>ชื่อ-นามสกุล:</strong> {{ request.user.get_full_name|default:"ไม่ได้ระบุ" }}</p>
-        <p><strong>อีเมล:</strong> {{ request.user.email|default:"ไม่ได้ระบุ" }}</p>
-        <p><strong>ชื่อผู้ใช้งาน (Username):</strong> {{ request.user.username }}</p>
-    </div>
-    
-    <div class="btn-group">
-        <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">
-            <i class="bi bi-pencil-square"></i> แก้ไขข้อมูลส่วนตัว
-        </a>
-        
-        <a href="{% url 'change_password' %}" class="btn btn-outline-warning">
-            <i class="bi bi-key"></i> เปลี่ยนรหัสผ่าน
-        </a>
 
-        <form method="post" action="{% url 'logout' %}" class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger ms-2">ออกจากระบบ</button>
-        </form>
+    <!-- ─── Personal Info ──────────────────────────────────── -->
+    <div class="info-card">
+        <div class="info-card-header">
+            <i class="fa-solid fa-circle-info"></i> ข้อมูลส่วนตัว
+        </div>
+        <div class="info-card-body pb-0">
+            <div class="info-row">
+                <div class="info-icon"><i class="fa-solid fa-user"></i></div>
+                <div class="flex-grow-1">
+                    <div class="info-label">ชื่อ-นามสกุล</div>
+                    <div class="info-value">{{ request.user.get_full_name|default:"ไม่ได้ระบุ" }}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon"><i class="fa-solid fa-at"></i></div>
+                <div class="flex-grow-1">
+                    <div class="info-label">ชื่อผู้ใช้งาน</div>
+                    <div class="info-value">{{ request.user.username }}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="flex-grow-1">
+                    <div class="info-label">อีเมล</div>
+                    <div class="info-value">{{ request.user.email|default:"ไม่ได้ระบุ" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="info-card-body pt-3 d-flex flex-wrap gap-2">
+            <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-action">
+                <i class="fa-solid fa-pen me-1"></i> แก้ไขข้อมูล
+            </a>
+            <a href="{% url 'change_password' %}" class="btn btn-outline-warning btn-action">
+                <i class="fa-solid fa-key me-1"></i> เปลี่ยนรหัสผ่าน
+            </a>
+            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-action">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> ออกจากระบบ
+                </button>
+            </form>
+        </div>
     </div>
+
+    <!-- ─── My Cases ───────────────────────────────────────── -->
+    <div class="info-card">
+        <div class="info-card-header">
+            <i class="fa-solid fa-flag"></i> เรื่องร้องเรียนของฉัน
+            <span class="badge bg-primary rounded-pill ms-auto" style="font-size:0.75rem;">{{ my_cases|length }}</span>
+        </div>
+        {% if my_cases %}
+            {% for case in my_cases %}
+            <div class="case-item">
+                <a href="{% url 'case_detail' case.id %}">
+                    <i class="fa-solid fa-chevron-right me-2 text-muted" style="font-size:0.7rem;"></i>
+                    {{ case.title }}
+                </a>
+                <span class="badge badge-status
+                    {% if case.status == 'pending' %}bg-warning text-dark
+                    {% elif case.status == 'in_progress' %}bg-info text-dark
+                    {% elif case.status == 'resolved' %}bg-success
+                    {% else %}bg-secondary{% endif %}">
+                    {{ case.get_status_display }}
+                </span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fa-regular fa-folder-open"></i>
+                <p class="mb-1 fw-medium" style="color:#6b7280;">ยังไม่มีเรื่องร้องเรียน</p>
+                <a href="{% url 'create_case' %}" class="btn btn-sm btn-primary mt-2 rounded-pill px-3">
+                    <i class="fa-solid fa-plus me-1"></i> แจ้งปัญหาแรก
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- ─── Following Cases ────────────────────────────────── -->
+    <div class="info-card">
+        <div class="info-card-header">
+            <i class="fa-solid fa-bookmark"></i> เรื่องที่กำลังติดตาม
+            <span class="badge rounded-pill ms-auto" style="background:#8b5cf6; font-size:0.75rem;">{{ following_cases|length }}</span>
+        </div>
+        {% if following_cases %}
+            {% for case in following_cases %}
+            <div class="case-item">
+                <a href="{% url 'case_detail' case.id %}">
+                    <i class="fa-solid fa-chevron-right me-2 text-muted" style="font-size:0.7rem;"></i>
+                    {{ case.title }}
+                </a>
+                <span class="badge badge-status
+                    {% if case.status == 'pending' %}bg-warning text-dark
+                    {% elif case.status == 'in_progress' %}bg-info text-dark
+                    {% elif case.status == 'resolved' %}bg-success
+                    {% else %}bg-secondary{% endif %}">
+                    {{ case.get_status_display }}
+                </span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fa-regular fa-bell-slash"></i>
+                <p class="mb-0 fw-medium" style="color:#6b7280;">ยังไม่ได้ติดตามเรื่องใดเลย</p>
+            </div>
+        {% endif %}
+    </div>
+
 </div>
-    
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>เรื่องร้องเรียนของฉัน</h3>
-        </div>
-        <ul class="list-group list-group-flush">
-            {% if my_cases %}
-                {% for case in my_cases %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{% url 'case_detail' case.id %}">{{ case.title }}</a>
-                        <span class="badge bg-secondary">{{ case.get_status_display }}</span>
-                    </li>
-                {% endfor %}
-            {% else %}
-                <li class="list-group-item text-muted">คุณยังไม่ได้แจ้งเรื่องร้องเรียนใดๆ</li>
-            {% endif %}
-        </ul>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>เรื่องที่กำลังติดตาม</h3>
-        </div>
-        <ul class="list-group list-group-flush">
-            {% if following_cases %}
-                {% for case in following_cases %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{% url 'case_detail' case.id %}">{{ case.title }}</a>
-                        <span class="badge bg-secondary">{{ case.get_status_display }}</span>
-                    </li>
-                {% endfor %}
-            {% else %}
-                <li class="list-group-item text-muted">คุณยังไม่ได้ติดตามเรื่องร้องเรียนใดๆ</li>
-            {% endif %}
-        </ul>
-    </div>
 {% endblock %}
